@@ -29,6 +29,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^8.0.7",
     "@nestjs/typeorm": "^10.0.2",
+    "@nestjs/websockets": "^10.4.8",
     "bcryptjs": "^2.4.3",
     "cache-manager": "5.4.0",
     "cache-manager-redis-store": "^3.0.1",
@@ -43,6 +44,7 @@
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
     "typeorm": "^0.3.20",
     "uuid": "^11.0.3",
     "winston": "^3.17.0"

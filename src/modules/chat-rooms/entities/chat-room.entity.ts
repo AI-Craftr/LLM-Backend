@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('chat_rooms')
 export class ChatRoom extends BaseEntity {
@@ -10,4 +10,10 @@ export class ChatRoom extends BaseEntity {
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  created_at: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  updated_at?: Date;
 }

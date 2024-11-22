@@ -15,6 +15,7 @@ import { RedisModule } from '../redis/redis.module';
 import { UsersModule } from '../users/users.module';
 import { AuthModule } from '../auth/auth.module';
 import { ChatRoomsModule } from '../chat-rooms/chat-rooms.module';
+import { ChatMessagesModule } from '../chat-messages/chat-messages.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ChatRoomsModule } from '../chat-rooms/chat-rooms.module';
     UsersModule,
     AuthModule,
     ChatRoomsModule,
+    ChatMessagesModule,
   ],
   controllers: [AppController],
   providers: [
