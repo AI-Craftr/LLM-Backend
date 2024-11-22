@@ -11,6 +11,7 @@ import { Database } from '@src/config/database/database.module';
 import { CommonModule } from '@src/common/common.module';
 import { RedisModule } from '../redis/redis.module';
 import { UsersModule } from '../users/users.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UsersModule } from '../users/users.module';
     LoggerModule,
     RedisModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

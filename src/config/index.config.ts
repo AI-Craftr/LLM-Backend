@@ -1,16 +1,16 @@
 import { readFileSync } from 'fs';
-import { IConfig } from './interfaces/config.interface';
 import { join, resolve } from 'path';
+import { IConfig } from './interfaces/config.interface';
 
 export const config = (): IConfig => {
-  // const public_key = readFileSync(
-  //   join(resolve(), 'src', 'modules', 'auth', 'jwt', 'keys/public.key'),
-  //   'utf-8',
-  // );
-  // const private_key = readFileSync(
-  //   join(resolve(), 'src', 'modules', 'auth', 'jwt', 'keys/private.key'),
-  //   'utf-8',
-  // );
+  const public_key = readFileSync(
+    join(resolve(), 'src', 'modules', 'auth', 'jwt', 'keys/public.key'),
+    'utf-8',
+  );
+  const private_key = readFileSync(
+    join(resolve(), 'src', 'modules', 'auth', 'jwt', 'keys/private.key'),
+    'utf-8',
+  );
 
   return {
     app_id: process.env.APP_ID,
@@ -39,8 +39,8 @@ export const config = (): IConfig => {
     },
     jwt: {
       access: {
-        private_key: '',
-        public_key: '',
+        private_key,
+        public_key,
         time: parseInt(process.env.JWT_ACCESS_TIME, 10),
       },
       refresh: {
