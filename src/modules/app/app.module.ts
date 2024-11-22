@@ -10,6 +10,7 @@ import typeorm from '@src/config/database/typeorm.config';
 import { Database } from '@src/config/database/database.module';
 import { CommonModule } from '@src/common/common.module';
 import { RedisModule } from '../redis/redis.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RedisModule } from '../redis/redis.module';
     CommonModule,
     LoggerModule,
     RedisModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
