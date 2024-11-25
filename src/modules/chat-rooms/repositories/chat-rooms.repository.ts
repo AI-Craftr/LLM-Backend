@@ -14,7 +14,7 @@ export class ChatRoomsRepository {
 
   public create(chatRoom: CreateChatRoomInput): Promise<ChatRoom> {
     const newChatRoom = this.chatRoomEntity.create({
-      title: chatRoom.title,
+      title: chatRoom?.title ?? '',
       owner_id: chatRoom.owner_id,
     });
     return this.chatRoomEntity.save(newChatRoom);

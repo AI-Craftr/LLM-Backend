@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUUID, Length } from 'class-validator';
+import { IsString, MaxLength, IsOptional } from 'class-validator';
 
 export class CreateChatRoomDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
-  @IsNotEmpty()
-  @Length(1, 255)
+  @IsOptional()
+  @MaxLength(255)
   title: string;
 }
