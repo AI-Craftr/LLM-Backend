@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { isJWT } from 'class-validator';
 import { Reflector } from '@nestjs/core';
@@ -28,10 +23,7 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    const activate = await this.setHttpHeader(
-      context.switchToHttp().getRequest<Request>(),
-      isPublic,
-    );
+    const activate = await this.setHttpHeader(context.switchToHttp().getRequest<Request>(), isPublic);
     if (!activate) {
       throw new UnauthorizedException(ResponseMessages.UNAUTHORIZED);
     }
@@ -39,16 +31,12 @@ export class AuthGuard implements CanActivate {
     return activate;
   }
 
-  private async setHttpHeader(
-    req: Request,
-    isPublic: boolean,
-  ): Promise<boolean> {
+  private async setHttpHeader(req: Request, isPublic: boolean): Promise<boolean> {
     const auth = req.headers?.authorization;
 
     if (isUndefined(auth) || isNull(auth) || auth.length === 0) {
       return isPublic;
     }
-
     const authArr = auth.split(' ');
     const bearer = authArr[0];
     const token = authArr[1];
@@ -61,10 +49,7 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const { user_id } = await this.jwtService.verifyToken(
-        token,
-        TokenTypeEnum.ACCESS,
-      );
+      const { user_id } = await this.jwtService.verifyToken(token, TokenTypeEnum.ACCESS);
 
       const user = await this.usersRepository.findOneBy({ user_id });
       if (!user) {
