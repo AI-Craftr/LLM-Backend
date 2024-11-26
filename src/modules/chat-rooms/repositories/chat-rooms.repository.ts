@@ -1,4 +1,4 @@
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, QueryRunner, Repository, SelectQueryBuilder } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatRoom } from '../entities/chat-room.entity';
@@ -18,5 +18,13 @@ export class ChatRoomsRepository {
       owner_id: chatRoom.owner_id,
     });
     return this.chatRoomEntity.save(newChatRoom);
+  }
+
+  public findMany(options?: FindManyOptions<ChatRoom>) {
+    return this.chatRoomEntity.find(options);
+  }
+
+  public createQueryBuilder(alias?: string, queryRunner?: QueryRunner): SelectQueryBuilder<ChatRoom> {
+    return this.chatRoomEntity.createQueryBuilder(alias, queryRunner);
   }
 }
