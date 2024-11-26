@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ChatRoomsRepository } from './repositories/chat-rooms.repository';
 import { ShareLinksRepository } from './repositories/share-links.repository';
 import { ChatRoom } from './entities/chat-room.entity';
@@ -6,6 +6,8 @@ import { PageOptionsDto } from '@src/common/dtos/page-options.dto';
 import { CreateChatRoomDto } from './dtos/create-chat-room.dto';
 import { PageMetaDto } from '@src/common/dtos/page-meta.dto';
 import { PageDto } from '@src/common/dtos/page.dto';
+import { UpdateChatRoomDto } from './dtos/update-chat-room.dto';
+import { ResponseMessages } from '@src/common/constants/response-messages.constant';
 
 @Injectable()
 export class ChatRoomsService {
@@ -40,5 +42,19 @@ export class ChatRoomsService {
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
     return new PageDto(entities, pageMetaDto);
+  }
+
+  public async updateChatRoom(chatRoomId: string, updateChatRoomDto: UpdateChatRoomDto) {
+    // Check exist chat room
+    const chatRoom = await this.chatRoomsRepository.findOneBy({ chat_room_id: chatRoomId });
+    if (!chatRoom) {
+      throw new NotFoundException(ResponseMessages.NOT_FOUND_CHAT_ROOM);
+    }
+
+    await this.chatRoomsRepository.updateOne(chatRoomId, updateChatRoomDto);
+
+    return {
+      message: ResponseMessages.CHAT_ROOM_UPDATED_SUCCESS,
+    };
   }
 }

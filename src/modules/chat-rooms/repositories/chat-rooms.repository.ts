@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatRoom } from '../entities/chat-room.entity';
 import { CreateChatRoomInput } from '../interfaces/create-chat-room-input.interface';
+import { UpdateChatRoomInput } from '../interfaces/update-chat-room.interface';
 
 @Injectable()
 export class ChatRoomsRepository {
@@ -26,5 +27,9 @@ export class ChatRoomsRepository {
 
   public createQueryBuilder(alias?: string, queryRunner?: QueryRunner): SelectQueryBuilder<ChatRoom> {
     return this.chatRoomEntity.createQueryBuilder(alias, queryRunner);
+  }
+
+  public updateOne(chatRoomId: string, input: UpdateChatRoomInput) {
+    return this.chatRoomEntity.update({ chat_room_id: chatRoomId }, { title: input.title });
   }
 }
