@@ -32,4 +32,8 @@ export class ChatRoomsRepository {
   public updateOne(chatRoomId: string, input: UpdateChatRoomInput) {
     return this.chatRoomEntity.update({ chat_room_id: chatRoomId }, { title: input.title });
   }
+
+  public deleteByChatRoomId(chatRoomId: string) {
+    return this.chatRoomEntity.delete({ chat_room_id: chatRoomId });
+  }
 }

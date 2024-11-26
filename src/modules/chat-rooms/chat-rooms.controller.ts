@@ -1,5 +1,16 @@
 import { ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ChatRoomsService } from './chat-rooms.service';
 import { TransformInterceptor } from '@src/common/interceptors';
 import { GetUser } from '@src/common/decorators';
@@ -12,6 +23,7 @@ import { ChatRoom } from './entities/chat-room.entity';
 import { UpdateChatRoomDto } from './dtos/update-chat-room.dto';
 import { ApiGetChatRoomList } from './docs/get-chat-room.doc';
 import { ApiUpdateChatRoom } from './docs/update-chat-room.doc';
+import { ApiDeleteChatRoom } from './docs/delete-chat-room.doc';
 
 @ApiTags('Chat_Rooms')
 @UseInterceptors(TransformInterceptor)
@@ -47,8 +59,15 @@ export class ChatRoomsController {
   public updateChatRoom(
     @Param('chat_room_id', ParseUUIDPipe) chatRoomId: string,
     @Body() updateChatRoomDto: UpdateChatRoomDto,
-  ) {
+  ): Promise<{ message: string }> {
     this.logger.log('Called update chat room', ChatRoomsController.name);
     return this.chatRoomsService.updateChatRoom(chatRoomId, updateChatRoomDto);
+  }
+
+  @ApiDeleteChatRoom()
+  @Delete(':chat_room_id')
+  public deleteChatRoom(@Param('chat_room_id', ParseUUIDPipe) chatRoomId: string) {
+    this.logger.log('Called delete chat room', ChatRoomsController.name);
+    return this.chatRoomsService.deleteChatRoom(chatRoomId);
   }
 }

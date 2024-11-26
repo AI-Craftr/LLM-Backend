@@ -4,7 +4,7 @@ import { LoggerService } from '@src/modules/logger/logger.service';
 
 @Catch(NotFoundException)
 export class NotFoundExceptionFilter extends BaseExceptionFilter {
-  constructor(private readonly devLogger: LoggerService) {
+  constructor(private readonly logger: LoggerService) {
     super();
   }
 
@@ -16,7 +16,7 @@ export class NotFoundExceptionFilter extends BaseExceptionFilter {
     const message = `404 Error: ${exception.message}`;
 
     // Log the 404 error message
-    this.devLogger.error(message, undefined, 'NotFoundExceptionFilter');
+    this.logger.error(message, undefined, 'NotFoundExceptionFilter');
 
     response.status(404).json({
       statusCode: 404,

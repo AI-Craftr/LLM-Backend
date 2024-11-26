@@ -28,7 +28,7 @@ export class ChatRoomsService {
     };
   }
 
-  public async getChatRoomList(ownerId: string, pageOptionsDto: PageOptionsDto) {
+  public async getChatRoomList(ownerId: string, pageOptionsDto: PageOptionsDto): Promise<PageDto<ChatRoom>> {
     const queryBuilder = this.chatRoomsRepository.createQueryBuilder('chat_rooms');
     queryBuilder
       .orderBy('chat_rooms.created_at', pageOptionsDto.order)
@@ -44,7 +44,7 @@ export class ChatRoomsService {
     return new PageDto(entities, pageMetaDto);
   }
 
-  public async updateChatRoom(chatRoomId: string, updateChatRoomDto: UpdateChatRoomDto) {
+  public async updateChatRoom(chatRoomId: string, updateChatRoomDto: UpdateChatRoomDto): Promise<{ message: string }> {
     // Check exist chat room
     const chatRoom = await this.chatRoomsRepository.findOneBy({ chat_room_id: chatRoomId });
     if (!chatRoom) {
@@ -55,6 +55,21 @@ export class ChatRoomsService {
 
     return {
       message: ResponseMessages.CHAT_ROOM_UPDATED_SUCCESS,
+    };
+  }
+
+  public async deleteChatRoom(chatRoomId: string): Promise<{ message: string }> {
+    const [chatRoom] = await Promise.all([
+      this.chatRoomsRepository.findOneBy({ chat_room_id: chatRoomId }),
+      this.chatRoomsRepository.deleteByChatRoomId(chatRoomId),
+    ]);
+
+    if (!chatRoom) {
+      throw new NotFoundException(ResponseMessages.NOT_FOUND_CHAT_ROOM);
+    }
+
+    return {
+      message: ResponseMessages.CHAT_ROOM_DELETED_SUCCESS,
     };
   }
 }

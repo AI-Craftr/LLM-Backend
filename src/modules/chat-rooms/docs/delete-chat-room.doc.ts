@@ -8,17 +8,15 @@ import {
 } from '@nestjs/swagger';
 import { ResponseMessages } from '@src/common/constants/response-messages.constant';
 
-export const ApiUpdateChatRoom = () => {
+export const ApiDeleteChatRoom = () => {
   return applyDecorators(
     ApiOperation({
-      summary: 'update a chat room by `chat_room_id`',
+      summary: 'delete chat room by `chat_room_id`',
     }),
     ApiOkResponse({
       schema: {
         example: {
-          statusCode: 200,
-          message: 'CHAT_ROOM_UPDATED_SUCCESS',
-          response: null,
+          message: ResponseMessages.CHAT_ROOM_DELETED_SUCCESS,
         },
       },
     }),
