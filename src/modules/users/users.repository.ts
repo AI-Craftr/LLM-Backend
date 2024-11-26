@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersRepository {
@@ -15,9 +15,11 @@ export class UsersRepository {
     return await this.userEntity.save(newUser);
   }
 
-  public async findOneBy(
-    where: FindOptionsWhere<User> | FindOptionsWhere<User>[],
-  ) {
+  public async findOneBy(where: FindOptionsWhere<User> | FindOptionsWhere<User>[]): Promise<User> {
     return this.userEntity.findOneBy(where);
+  }
+
+  public async findOne(options: FindOneOptions<User>): Promise<User> {
+    return this.userEntity.findOne(options);
   }
 }
