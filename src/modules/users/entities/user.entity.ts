@@ -31,7 +31,7 @@ export class User extends BaseEntity {
   created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  last_login: Date;
+  updated_at: Date;
 
   @BeforeInsert()
   @BeforeUpdate()
