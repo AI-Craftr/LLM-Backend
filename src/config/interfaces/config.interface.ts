@@ -17,5 +17,5 @@ export interface IConfig {
   readonly is_development: boolean;
   readonly is_production: boolean;
   readonly jwt: IJwt;
-  readonly elasticsearch: IElasticSearch;
+  // readonly elasticsearch: IElasticSearch;
 }

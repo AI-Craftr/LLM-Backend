@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -28,6 +28,7 @@ import { ApiDeleteChatRoom } from './docs/delete-chat-room.doc';
 @ApiTags('Chat_Rooms')
 @UseInterceptors(TransformInterceptor)
 @Controller('chat-rooms')
+@ApiBearerAuth("Authorization")
 export class ChatRoomsController {
   constructor(
     private logger: LoggerService,

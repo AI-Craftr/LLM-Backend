@@ -47,4 +47,4 @@ const config = {
 
 export default registerAs('typeorm', () => typeormConfig);
 export const typeormConfig = config[mode];
-export const connectionSource = new DataSource(typeormConfig as DataSourceOptions);
+// export const connectionSource = new DataSource(typeormConfig as DataSourceOptions);

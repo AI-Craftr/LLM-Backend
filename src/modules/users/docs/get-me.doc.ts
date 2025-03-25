@@ -1,9 +1,10 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { ResponseMessages } from '@src/common/constants/response-messages.constant';
 
 export const ApiGetMe = () => {
   return applyDecorators(
+    ApiBearerAuth("Authorization"),
     ApiOperation({
       summary: 'Get logged in user',
     }),

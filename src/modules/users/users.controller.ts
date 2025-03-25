@@ -1,3 +1,4 @@
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Controller, Get } from '@nestjs/common';
 import { GetUser } from '@src/common/decorators';
 import { LoggerService } from '../logger/logger.service';
