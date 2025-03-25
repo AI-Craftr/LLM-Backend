@@ -36,4 +36,13 @@ export class ChatRoomsRepository {
   public deleteByChatRoomId(chatRoomId: string) {
     return this.chatRoomEntity.delete({ chat_room_id: chatRoomId });
   }
+
+  public async fetchChatHistory(ownerId: string, chatRoomId: string): Promise<ChatRoom[]> {
+    return this.chatRoomEntity.find({
+      where: {
+        owner_id: ownerId,
+        chat_room_id: chatRoomId,
+      },
+    });
+  }
 }
