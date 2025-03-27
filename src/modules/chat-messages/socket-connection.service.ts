@@ -13,7 +13,7 @@ export class SocketConnectionService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersRepository: UsersRepository,
-  ) {}
+  ) { }
 
   async handleConnection(client: Socket) {
     try {
@@ -65,12 +65,14 @@ export class SocketConnectionService {
   }
 
   private handleError(client: Socket, error: any) {
-    const unauthorizedException = new UnauthorizedException();
+    const errorMessage = error.response.message;
+
+    const unauthorizedException = new UnauthorizedException(errorMessage);
     this.disconnect(client, unauthorizedException);
   }
 
-  private disconnect(socket: Socket, error: HttpException) {
-    socket.emit(SocketKeys.ERROR, error);
+  private disconnect(socket: Socket, error: any) {
+    socket.emit(SocketKeys.ERROR, error.response);
     socket.disconnect();
     socket.rooms.clear();
   }

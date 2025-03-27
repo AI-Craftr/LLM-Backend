@@ -14,7 +14,7 @@ const corsOptions: CorsOptions = {
 
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsCatchAllFilter())
-@WebSocketGateway(80, {
+@WebSocketGateway({
   cors: corsOptions,
 })
 export class SocketGateway implements OnModuleInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -31,7 +31,7 @@ export class SocketGateway implements OnModuleInit, OnGatewayConnection, OnGatew
     this.connectionService.handleConnection(socket);
   }
 
-  handleDisconnect(socket: Socket) {
+  handleDisconnect(socket: Socket) {    
     this.logger.log(`${socket.id} disconnected!`, SocketGateway.name);
   }
 

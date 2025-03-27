@@ -7,10 +7,11 @@ import { ChatMessagesRepository } from './chat-messages.repository';
 import { SocketConnectionService } from './socket-connection.service';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { SocketGateway } from './socket.gateway';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ChatMessage]), AuthModule, UsersModule],
   controllers: [ChatMessagesController],
-  providers: [ChatMessagesService, ChatMessagesRepository, ChatMessagesRepository, SocketConnectionService],
+  providers: [ChatMessagesService, ChatMessagesRepository, ChatMessagesRepository, SocketConnectionService, SocketGateway],
 })
 export class ChatMessagesModule {}
