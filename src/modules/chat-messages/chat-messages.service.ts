@@ -17,6 +17,10 @@ export class ChatMessagesService {
     return this.chatMessagesRepository.update(chatMessageId, response, status);
   }
   
+  public async getChatMessages(chatRoomId:string): Promise<ChatMessage> {
+    return this.chatMessagesRepository.findRoom(chatRoomId);
+  }
+
   public async ensureMessageExist(chatMessageId:string) {
     const chatMessage = await this.chatMessagesRepository.findOne(chatMessageId);
     if (!chatMessage) throw new NotFoundException(ChatMessageEnum.CHAT_MESSAGE_NOTFOUND);

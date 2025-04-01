@@ -30,4 +30,8 @@ export class ChatMessagesRepository {
       status
     })
   }
+
+  public async findRoom(chatRoomId:string): Promise<ChatMessage> {
+    return this.chatMessageEntity.findOne({ where: { chat_message_id: chatRoomId }});
+  }
 }
