@@ -1,7 +1,9 @@
 import { ChatMessage } from "../entities/chat-message.entity";
-import { ChatMessageInput } from "../types";
 
 export interface IChatMessageRepository {
-    create(chatMessage: ChatMessageInput): Promise<ChatMessage>;
-    update(chatMessageId: string, response: string, status: string): Promise<ChatMessage>;
+    create(chatRoomId: string, ownerId: string, userPrompt: string): Promise<ChatMessage>;
+    update(chatMessageId: string, response: string, status: string);
+    findOne(chatMessageId:string): Promise<ChatMessage>;
+    findRoom(chatRoomId:string): Promise<ChatMessage>;
+    remove(chatMessageId:string);
 }

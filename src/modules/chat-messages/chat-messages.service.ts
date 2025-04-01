@@ -8,7 +8,7 @@ export class ChatMessagesService {
   constructor(private chatMessagesRepository: ChatMessagesRepository) {}
 
   public async sendMessage(chatRoomId:string, ownerId:string, userPrompt:string): Promise<ChatMessage> {
-    const sendMessage = await this.chatMessagesRepository.createMessage(chatRoomId, ownerId, userPrompt);
+    const sendMessage = await this.chatMessagesRepository.create(chatRoomId, ownerId, userPrompt);
     return sendMessage;
   }
 
@@ -25,5 +25,10 @@ export class ChatMessagesService {
     const chatMessage = await this.chatMessagesRepository.findOne(chatMessageId);
     if (!chatMessage) throw new NotFoundException(ChatMessageEnum.CHAT_MESSAGE_NOTFOUND);
     return chatMessage
+  }
+
+  public async deleteMessage(chatMessageId:string) {
+    await this.ensureMessageExist(chatMessageId);
+    return await this.chatMessagesRepository.remove(chatMessageId);
   }
 }
