@@ -29,7 +29,7 @@ import { LangchainMoule } from '../langchain/langchain.module';
     Database,
     CommonModule,
     LoggerModule,
-    RedisModule,
+    // RedisModule,
     UsersModule,
     AuthModule,
     ChatRoomsModule,

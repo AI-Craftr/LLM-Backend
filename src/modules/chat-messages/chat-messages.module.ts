@@ -12,5 +12,6 @@ import { UsersModule } from '../users/users.module';
   imports: [TypeOrmModule.forFeature([ChatMessage]), AuthModule, UsersModule],
   controllers: [ChatMessagesController],
   providers: [ChatMessagesService, ChatMessagesRepository, ChatMessagesRepository, SocketConnectionService],
+  exports: [ChatMessagesRepository],
 })
 export class ChatMessagesModule {}

@@ -7,8 +7,8 @@ import { JwtService } from '@src/modules/auth/jwt/jwt.service';
 import { IS_PUBLIC_KEY } from '@src/common/decorators';
 import { UsersRepository } from '@src/modules/users/users.repository';
 import { TokenTypeEnum } from '@src/modules/auth/jwt/enums/token-type.enum';
-import { isNull, isUndefined } from '@src/common/utils/validation.util';
 import { ResponseMessages } from '@src/common/constants/response-messages.constant';
+import { isNull, isUndefined } from '../utils';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

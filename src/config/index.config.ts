@@ -56,9 +56,9 @@ export const config = (): IConfig => {
         time: parseInt(process.env.JWT_CONFIRMATION_TIME, 10),
       },
     },
-    elasticsearch: {
-      node: process.env.ELASTICSEARCH_NODE,
-      api_key: process.env.ELASTICSEARCH_API_KEY,
-    },
+    // elasticsearch: {
+    //   node: process.env.ELASTICSEARCH_NODE,
+    //   api_key: process.env.ELASTICSEARCH_API_KEY,
+    // },
   };
 };

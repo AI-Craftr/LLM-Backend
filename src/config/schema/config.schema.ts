@@ -29,6 +29,6 @@ export const validationSchema = Joi.object({
   JWT_REFRESH_TIME: Joi.number().required(),
 
   // Elasticsearch
-  ELASTICSEARCH_NODE: Joi.string().required(),
-  ELASTICSEARCH_API_KEY: Joi.string().required(),
+  // ELASTICSEARCH_NODE: Joi.string().required(),
+  // ELASTICSEARCH_API_KEY: Joi.string().required(),
 });
