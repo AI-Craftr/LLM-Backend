@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@langchain/core": "^0.3.18",
+    "@langchain/community": "^0.3.38",
+    "@langchain/core": "^0.3.43",
     "@langchain/ollama": "^0.1.2",
     "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^10.0.0",
