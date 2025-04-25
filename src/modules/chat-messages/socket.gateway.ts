@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import { OnModuleInit, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
-import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody } from '@nestjs/websockets';
 import { WsCatchAllFilter } from '@src/common/exceptions/ws-catch-all-filter';
 import { ChatMessagesService } from './chat-messages.service';
 import { SocketConnectionService } from './socket-connection.service';
@@ -39,5 +39,12 @@ export class SocketGateway implements OnModuleInit, OnGatewayConnection, OnGatew
     this.server.on('connection', socket => {
       console.log(`Connected ${socket.id}`, SocketGateway.name);
     });
+  }
+
+  @SubscribeMessage("sendMessage")
+  async handleMessage(@MessageBody() data: { chatRoomId:string, ownerId:string, userPrompt:string }) {
+    console.log(data);
+    
+    const response = await this.chatMessagesService.processUserMessage(data.chatRoomId, data.ownerId, data.userPrompt);
   }
 }

@@ -5,7 +5,6 @@ import { UsersRepository } from '../users/users.repository';
 import { ResponseMessages } from '@src/common/constants/response-messages.constant';
 import { TokenTypeEnum } from '../auth/jwt/enums/token-type.enum';
 import { SocketKeys } from './constants/socket.keys';
-import { ChatTogetherAIService } from '../langchain/services/chat-together-ai.service';
 
 @Injectable()
 export class SocketConnectionService {
@@ -14,7 +13,6 @@ export class SocketConnectionService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersRepository: UsersRepository,
-    private readonly chatTogetherAIService: ChatTogetherAIService
   ) { }
 
   async handleConnection(client: Socket) {
@@ -27,18 +25,17 @@ export class SocketConnectionService {
       }
 
       if (!authorization) {
-        this.handleTemporaryUser(client, fingerprintId);
+        this.handleGuestUser(client, fingerprintId);
         return;
       }
 
       await this.handleAuthenticatedUser(client, authorization);
-      this.HandleConversation(client);
     } catch (err) {
       this.handleError(client, err);
     }
   }
 
-  private handleTemporaryUser(client: Socket, fingerprintId: string) {
+  private handleGuestUser(client: Socket, fingerprintId: string) {
     client.join(fingerprintId);
     client.data.is_guest_mode = true;
     client.data.fingerprint_id = fingerprintId;
@@ -60,16 +57,6 @@ export class SocketConnectionService {
 
     client.on('disconnect', () => {
       this.connectedClients.delete(client.id);
-    });
-  }
-
-  private HandleConversation(client:Socket) {
-    client.on("message", async data => {
-      const ai = this.chatTogetherAIService.chat(data.message);
-
-      for await (const chunk of ai) {
-        client.emit("ai_message", chunk);
-      }
     });
   }
 

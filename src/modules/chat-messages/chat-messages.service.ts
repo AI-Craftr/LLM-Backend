@@ -2,10 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ChatMessagesRepository } from './chat-messages.repository';
 import { ChatMessage, StatusEnum } from './entities/chat-message.entity';
 import { ChatMessageEnum } from '@src/common/message/message.enum';
+import { ChatTogetherAIService } from '../langchain/services/chat-together-ai.service';
 
 @Injectable()
 export class ChatMessagesService {
-  constructor(private chatMessagesRepository: ChatMessagesRepository) {}
+  constructor(
+    private chatMessagesRepository: ChatMessagesRepository,
+    private chatTogetherAIService: ChatTogetherAIService
+  ) {}
 
   public async sendMessage(chatRoomId:string, ownerId:string, userPrompt:string): Promise<ChatMessage> {
     const sendMessage = await this.chatMessagesRepository.create(chatRoomId, ownerId, userPrompt);
@@ -31,4 +35,14 @@ export class ChatMessagesService {
     await this.ensureMessageExist(chatMessageId);
     return await this.chatMessagesRepository.remove(chatMessageId);
   }
+
+  public async processUserMessage(chatRoomId: string, ownerId: string, userPrompt: string) {
+    const chatMessage = await this.sendMessage(chatRoomId, ownerId, userPrompt);
+  
+    const aiResponse = this.chatTogetherAIService.chat(userPrompt);
+    console.log(aiResponse);
+    
+    // return await this.updateMessageResponse(chatMessage.chat_message_id, aiResponse, StatusEnum.ANSWERED);
+  }
+  
 }
