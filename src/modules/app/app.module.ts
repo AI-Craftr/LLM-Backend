@@ -16,7 +16,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthModule } from '../auth/auth.module';
 import { ChatRoomsModule } from '../chat-rooms/chat-rooms.module';
 import { ChatMessagesModule } from '../chat-messages/chat-messages.module';
-import { LangchainMoule } from '../langchain/langchain.module';
+import { SocketModule } from '../socket/socket.module';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { LangchainMoule } from '../langchain/langchain.module';
     AuthModule,
     ChatRoomsModule,
     ChatMessagesModule,
-    LangchainMoule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [

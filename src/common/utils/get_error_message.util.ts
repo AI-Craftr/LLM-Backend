@@ -1,0 +1,1 @@
+export const getErrorMessage = (err: any): string => err?.message ?? err?.name

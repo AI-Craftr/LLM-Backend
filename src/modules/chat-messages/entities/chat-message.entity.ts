@@ -10,7 +10,7 @@ export enum StatusEnum {
 @Entity('chat_messages')
 export class ChatMessage extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  chat_message_id: string;
+  id: string;
 
   @Column('uuid')
   chat_room_id: string;
@@ -26,6 +26,9 @@ export class ChatMessage extends BaseEntity {
 
   @Column({ type: 'varchar', enum: [StatusEnum.ASKED, StatusEnum.ANSWERED, StatusEnum.CANCELLED, StatusEnum.FAILURE] })
   status: StatusEnum;
+
+  @Column({ type: 'text', default: null })
+  function_name: string;
 
   @Column({ type: 'varchar' })
   resource_url: string;
