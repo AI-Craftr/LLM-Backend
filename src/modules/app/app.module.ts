@@ -29,7 +29,7 @@ import { SocketModule } from '../socket/socket.module';
     Database,
     CommonModule,
     LoggerModule,
-    // RedisModule,
+    RedisModule,
     UsersModule,
     AuthModule,
     ChatRoomsModule,

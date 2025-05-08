@@ -9,10 +9,10 @@ export const RedisOptions: CacheModuleAsyncOptions = {
   useFactory: async (configService: ConfigService, logger: LoggerService) => {
     const store = await redisStore({
       socket: {
-        host: configService.get<string>('redis.host'),
-        port: configService.get<number>('redis.port'),
+        host: process.env.REDIS_HOST,
+        port: +process.env.REDIS_PORT,
       },
-      password: configService.get<string>('redis.password'),
+      password: process.env.REDIS_PASSWORD,
     });
 
     const redisClient = store.getClient();

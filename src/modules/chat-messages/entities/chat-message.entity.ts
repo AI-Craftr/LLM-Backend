@@ -1,11 +1,5 @@
+import { StatusEnum } from '@src/common/enums/status.enum';
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
-export enum StatusEnum {
-  ANSWERED = 'answered',
-  ASKED = 'asked',
-  FAILURE = 'failure',
-  CANCELLED = 'cancelled',
-}
 
 @Entity('chat_messages')
 export class ChatMessage extends BaseEntity {
