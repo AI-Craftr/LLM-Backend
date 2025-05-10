@@ -38,7 +38,7 @@ export class ChatRoomsController {
   @ApiCreateChatRoom()
   @Post()
   public createChatRoom(
-    @GetUser('user_id') userId: string,
+    @GetUser('_id') userId: string,
     @Body() createChatRoomDto: CreateChatRoomDto,
   ): Promise<{ chat_room: ChatRoom }> {
     this.logger.log('Called create chat room', ChatRoomsController.name);
@@ -48,7 +48,7 @@ export class ChatRoomsController {
   @ApiGetChatRoomList()
   @Get()
   public getChatRoomList(
-    @GetUser('user_id') userId: string,
+    @GetUser('_id') userId: string,
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<ChatRoom>> {
     this.logger.log('Called get chat room list', ChatRoomsController.name);

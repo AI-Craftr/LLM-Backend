@@ -61,7 +61,7 @@ export class AuthService {
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = await this.jwtService.verifyToken<IRefreshToken>(refreshToken, TokenTypeEnum.REFRESH);
 
-    const user = await this.usersRepository.findOneBy({ user_id: payload.user_id });
+    const user = await this.usersRepository.findOneBy({ _id: payload.user_id });
 
     const [accessToken, newRefreshToken] = await this.jwtService.generateAuthTokens(user, domain, payload.tokenId);
 

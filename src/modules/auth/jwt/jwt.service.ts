@@ -80,7 +80,7 @@ export class JwtService {
   ): Promise<string> {
     const jwtOptions: jwt.SignOptions = {
       issuer: this.issuer,
-      subject: user.user_id,
+      subject: user._id,
       audience: domain ?? this.domain,
       algorithm: 'HS256',
     };
@@ -88,7 +88,7 @@ export class JwtService {
       case TokenTypeEnum.ACCESS:
         const { private_key, time: accessTime } = this.jwtConfig.access;
         return this.commonService.throwInternalError(
-          JwtService.generateTokenAsync({ user_id: user.user_id }, private_key, {
+          JwtService.generateTokenAsync({ user_id: user._id }, private_key, {
             ...jwtOptions,
             expiresIn: accessTime,
             algorithm: 'RS256',
@@ -99,7 +99,7 @@ export class JwtService {
         return this.commonService.throwInternalError(
           JwtService.generateTokenAsync(
             {
-              user_id: user.user_id,
+              user_id: user._id,
               tokenId: tokenId ?? v4(),
             },
             refreshSecret,
@@ -113,7 +113,7 @@ export class JwtService {
       case TokenTypeEnum.RESET_PASSWORD:
         const { secret, time } = this.jwtConfig[tokenType];
         return this.commonService.throwInternalError(
-          JwtService.generateTokenAsync({ user_id: user.user_id }, secret, {
+          JwtService.generateTokenAsync({ user_id: user._id }, secret, {
             ...jwtOptions,
             expiresIn: time,
           }),

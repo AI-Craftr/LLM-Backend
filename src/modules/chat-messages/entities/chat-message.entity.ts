@@ -10,7 +10,7 @@ export class ChatMessage extends BaseEntity {
   chat_room_id: string;
 
   @Column('uuid')
-  owner_id: string;
+  user_id: string;
 
   @Column({ type: 'varchar' })
   user_prompt: string;

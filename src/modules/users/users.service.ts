@@ -7,8 +7,8 @@ export class UsersService {
 
   public async getMe(userId: string) {
     const user = await this.usersRepository.findOne({
-      where: { user_id: userId },
-      select: ['user_id', 'email', 'full_name', 'avatar_url', 'created_at', 'updated_at'],
+      where: { _id: userId },
+      select: ['_id', 'email', 'full_name', 'avatar_url', 'created_at', 'updated_at'],
     });
 
     return {

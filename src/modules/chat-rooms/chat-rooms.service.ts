@@ -46,7 +46,7 @@ export class ChatRoomsService {
 
   public async updateChatRoom(chatRoomId: string, updateChatRoomDto: UpdateChatRoomDto): Promise<{ message: string }> {
     // Check exist chat room
-    const chatRoom = await this.chatRoomsRepository.findOneBy({ chat_room_id: chatRoomId });
+    const chatRoom = await this.chatRoomsRepository.findOneBy({ _id: chatRoomId });
     if (!chatRoom) {
       throw new NotFoundException(ResponseMessages.NOT_FOUND_CHAT_ROOM);
     }
@@ -60,7 +60,7 @@ export class ChatRoomsService {
 
   public async deleteChatRoom(chatRoomId: string): Promise<{ message: string }> {
     const [chatRoom] = await Promise.all([
-      this.chatRoomsRepository.findOneBy({ chat_room_id: chatRoomId }),
+      this.chatRoomsRepository.findOneBy({ _id: chatRoomId }),
       this.chatRoomsRepository.deleteByChatRoomId(chatRoomId),
     ]);
 

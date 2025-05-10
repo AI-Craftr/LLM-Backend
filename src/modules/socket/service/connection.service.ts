@@ -44,15 +44,15 @@ export class ConnectionService {
     private async handleAuthenticatedUser(client: Socket, authorization: string) {
         client.data.isTemporaryUser = false;
         const token = this.extractToken(authorization);
-
+        
         const { user_id } = await this.jwtService.verifyToken(token, TokenTypeEnum.ACCESS);
-        const user = await this.userRepository.findOneBy({ user_id });
-
+        const user = await this.userRepository.findOneBy({ _id: user_id });
+        
         if (!user) {
             throw new UnauthorizedException(ResponseMessages.UNAUTHORIZED);
         }
 
-        client.data.userId = user.user_id;
+        client.data.userId = user._id;
         this.connectedClients.set(client.id, client);
 
         client.on('disconnect', () => {

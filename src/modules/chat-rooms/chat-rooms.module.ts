@@ -11,5 +11,6 @@ import { ShareLinksRepository } from './repositories/share-links.repository';
   imports: [TypeOrmModule.forFeature([ChatRoom, ShareLink])],
   controllers: [ChatRoomsController],
   providers: [ChatRoomsService, ChatRoomsRepository, ShareLinksRepository],
+  exports: [ChatRoomsService, ChatRoomsRepository]
 })
 export class ChatRoomsModule {}

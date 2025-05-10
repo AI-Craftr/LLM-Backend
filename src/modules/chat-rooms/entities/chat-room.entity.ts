@@ -3,7 +3,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, U
 @Entity('chat_rooms')
 export class ChatRoom extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  chat_room_id: string;
+  _id: string;
 
   @Column({ type: 'uuid' })
   owner_id: string;

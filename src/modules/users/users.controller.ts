@@ -14,7 +14,7 @@ export class UsersController {
 
   @ApiGetMe()
   @Get('@me')
-  public getMe(@GetUser('user_id') userId: string) {
+  public getMe(@GetUser('_id') userId: string) {
     this.logger.log('Called get me', UsersController.name);
     return this.usersService.getMe(userId);
   }
