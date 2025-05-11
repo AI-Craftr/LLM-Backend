@@ -1,5 +1,6 @@
 import { bold } from 'chalk';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app/app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -30,6 +31,8 @@ async function bootstrap() {
 
     const logger = app.get(LoggerService);
     app.useGlobalFilters(new NotFoundExceptionFilter(logger));
+
+    app.use(cookieParser(configService.get<string>('COOKIE_SECRET')))
 
     await app.listen(port, () => {
       const runningMode = `Server running in ${bold(mode)} mode`;

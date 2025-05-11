@@ -1,21 +1,22 @@
-import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
+import { Response } from 'express';
+import { Injectable, ConflictException, BadRequestException, Res } from '@nestjs/common';
 import { UsersRepository } from '@src/modules/users/users.repository';
 import { SignupDto } from './dtos/signup.dto';
 import { JwtService } from './jwt/jwt.service';
 import { ResponseMessages } from '@src/common/constants/response-messages.constant';
 import { LoginDto } from './dtos/login.dto';
-import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { IRefreshToken } from './jwt/interfaces/refresh-token.interface';
 import { TokenTypeEnum } from './jwt/enums/token-type.enum';
+import { CookiesOptionsAccessToken, CookiesOptionsRefreshToken } from '@src/common/utils/cookie.util';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
-  public async signup(signupDto: SignupDto): Promise<{ accessToken: string; refreshToken: string }> {
+  public async signup(signupDto: SignupDto, @Res({ passthrough: true }) res: Response): Promise<{ accessToken: string; refreshToken: string }> {
     const duplicatedEmail = await this.usersRepository.findOneBy({
       email: signupDto.email,
     });
@@ -32,10 +33,14 @@ export class AuthService {
 
     const [accessToken, refreshToken] = await this.jwtService.generateAuthTokens(user);
 
+    res.cookie("accessToken", accessToken, CookiesOptionsAccessToken());
+
+    res.cookie('refreshToken', refreshToken, CookiesOptionsRefreshToken());
+
     return { accessToken, refreshToken };
   }
 
-  public async login(loginDto: LoginDto): Promise<{ accessToken: string; refreshToken: string }> {
+  public async login(loginDto: LoginDto, @Res({ passthrough: true }) res: Response): Promise<{ accessToken: string; refreshToken: string }> {
     const user = await this.usersRepository.findOneBy({
       email: loginDto.email,
     });
@@ -52,11 +57,16 @@ export class AuthService {
 
     const [accessToken, refreshToken] = await this.jwtService.generateAuthTokens(user);
 
+    res.cookie("accessToken", accessToken, CookiesOptionsAccessToken());
+
+    res.cookie('refreshToken', refreshToken, CookiesOptionsRefreshToken());
+
     return { accessToken, refreshToken };
   }
 
   public async refreshToken(
     refreshToken: string,
+    @Res({ passthrough: true }) res: Response,
     domain?: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = await this.jwtService.verifyToken<IRefreshToken>(refreshToken, TokenTypeEnum.REFRESH);
@@ -64,6 +74,10 @@ export class AuthService {
     const user = await this.usersRepository.findOneBy({ _id: payload.user_id });
 
     const [accessToken, newRefreshToken] = await this.jwtService.generateAuthTokens(user, domain, payload.tokenId);
+
+    res.cookie("accessToken", accessToken, CookiesOptionsAccessToken());
+
+    res.cookie('refreshToken', refreshToken, CookiesOptionsRefreshToken());
 
     return {
       accessToken: accessToken,
