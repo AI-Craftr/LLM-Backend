@@ -6,7 +6,7 @@ export class ChatRoom extends BaseEntity {
   _id: string;
 
   @Column({ type: 'uuid' })
-  owner_id: string;
+  user_id: string;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;

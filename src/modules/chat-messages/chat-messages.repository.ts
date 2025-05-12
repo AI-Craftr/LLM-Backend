@@ -11,7 +11,8 @@ export class ChatMessageRepository {
     ) { }
 
     create(data: CreateMessageInput) {
-        return this.chatMessageModel.create(data);
+        const createChatMessage = this.chatMessageModel.create(data);
+        return this.chatMessageModel.save(createChatMessage);
     }
 
     public async save(data: CreateMessageInput) {

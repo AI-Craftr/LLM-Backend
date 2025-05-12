@@ -1,4 +1,4 @@
 export interface CreateChatRoomInput {
   title: string;
-  owner_id: string;
+  user_id: string;
 }

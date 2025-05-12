@@ -20,7 +20,7 @@ export class ChatRoomsService {
     // Create a record chat room in database
     const chatRoom = await this.chatRoomsRepository.create({
       title: createChatRoomDto?.title,
-      owner_id: ownerId,
+      user_id: ownerId,
     });
 
     return {

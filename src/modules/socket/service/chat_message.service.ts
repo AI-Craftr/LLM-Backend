@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { Cache } from "cache-manager";
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { CreateMessageDto } from "@src/modules/chat-messages/dtos/create-message.dto";
 import { DevLoggerService } from "@src/modules/logger/dev_logger.service";
@@ -11,7 +11,6 @@ import { createMessageValidator } from "../validator/create-message.validator";
 import { ChatRoomsRepository } from "@src/modules/chat-rooms/repositories/chat-rooms.repository";
 import { AgentsService } from "./agents.service";
 import { UsersRepository } from "@src/modules/users/users.repository";
-import { ResponseMessages } from "@src/common/constants/response-messages.constant";
 import { ChatMessageRepository } from "@src/modules/chat-messages/chat-messages.repository";
 
 @Injectable()
@@ -95,23 +94,35 @@ export class ChatMessageService {
         const { chat_room_id, user_prompt } = data;
 
         try {
-            const [chatRoom, user] = await Promise.all([
+            let [chatRoom, user] = await Promise.all([
                 this.chatRoomsRepository.findOneBy({ _id: chat_room_id  }),
                 this.usersRepository.findOneBy({ _id: userId })
             ])
 
             if (!chatRoom) {
-                throw new NotFoundException(ResponseMessages.NOT_FOUND_CHAT_ROOM);
+                chatRoom = await this.chatRoomsRepository.create({
+                    title: user_prompt,
+                    user_id: user._id
+                })
+            };
+
+            const stream = this.agentsService.streamChat(user_prompt);
+
+            let fullResponse: string = "";
+
+            for await (const chunk of stream) {
+                fullResponse += chunk;
+                socket.emit("ai_response", chunk);
             }
 
-            const createMessage = this.chatMessageRepository.create({
+            await this.chatMessageRepository.create({
                 user_id: user._id,
                 chat_room_id: chatRoom._id,
                 user_prompt,
-                status: StatusEnum.ASKED
-            })
-
-            await this.chatMessageRepository.save(createMessage);
+                response: fullResponse,
+                resource_url: "",
+                status: StatusEnum.ANSWERED
+            });
         } catch (err) {
             const errorMessage = getErrorMessage(err);
             this.devLogger.error(errorMessage, null, 'PROCESS_AUTHENTICATED_MODE_MESSAGE');
