@@ -55,7 +55,7 @@ export class ChatMessageService {
         await this.processGuestModeMessage(userPrompt, fingerprintId, socket);
     }
 
-    private async processGuestModeMessage(userPrompt: string, fingerprintId: string, socket:Socket): Promise<void> {
+    private async processGuestModeMessage(userPrompt: string, fingerprintId: string, socket: Socket): Promise<void> {
         const cacheKey = `message-${fingerprintId}`;
 
         const initialMessage = {
@@ -67,18 +67,12 @@ export class ChatMessageService {
         try {
             await this.cacheManager.set(cacheKey, JSON.stringify(initialMessage), this.ttl);
 
-            const stream = this.agentsService.streamChat(userPrompt);
-
-            let fullResponse = "";
-            for await (const chunk of stream) {
-                fullResponse += chunk;
-                socket.emit("ai_response", chunk);
-            }
+            const invoke = await this.streamMessage(userPrompt, socket);
 
             const finalMessage = {
                 ...initialMessage,
                 status: StatusEnum.ANSWERED,
-                response: fullResponse
+                response: invoke
             }
 
             await this.cacheManager.set(cacheKey, JSON.stringify(finalMessage), this.ttl);
@@ -95,7 +89,7 @@ export class ChatMessageService {
 
         try {
             let [chatRoom, user] = await Promise.all([
-                this.chatRoomsRepository.findOneBy({ _id: chat_room_id  }),
+                this.chatRoomsRepository.findOneBy({ _id: chat_room_id }),
                 this.usersRepository.findOneBy({ _id: userId })
             ])
 
@@ -106,20 +100,13 @@ export class ChatMessageService {
                 })
             };
 
-            const stream = this.agentsService.streamChat(user_prompt);
-
-            let fullResponse: string = "";
-
-            for await (const chunk of stream) {
-                fullResponse += chunk;
-                socket.emit("ai_response", chunk);
-            }
+            const invoke = await this.streamMessage(user_prompt, socket);
 
             await this.chatMessageRepository.create({
                 user_id: user._id,
                 chat_room_id: chatRoom._id,
                 user_prompt,
-                response: fullResponse,
+                response: invoke,
                 resource_url: "",
                 status: StatusEnum.ANSWERED
             });
@@ -127,5 +114,17 @@ export class ChatMessageService {
             const errorMessage = getErrorMessage(err);
             this.devLogger.error(errorMessage, null, 'PROCESS_AUTHENTICATED_MODE_MESSAGE');
         }
+    }
+
+    private async streamMessage(userPrompt: string, socket: Socket): Promise<string | null> {
+        const stream = this.agentsService.streamChat(userPrompt);
+
+        let fullResponse: string = "";
+        for await (const chunk of stream) {
+            fullResponse += chunk;
+            socket.emit("ai_response", chunk);
+        }
+
+        return fullResponse;
     }
 }

@@ -7,6 +7,7 @@ import { ConnectionService } from "./service/connection.service";
 import { ChatMessageService } from "./service/chat_message.service";
 import { SocketKeys } from "@src/common/constants/socket.keys";
 import { CreateMessageDto } from "../chat-messages/dtos/create-message.dto";
+import { getErrorMessage } from "@src/common/utils/get_error_message.util";
 
 const corsOptions: CorsOptions = {
     origin: 'http://localhost:3000',
@@ -46,10 +47,12 @@ export class SocketGateway implements OnModuleInit, OnGatewayConnection, OnGatew
 
     @SubscribeMessage(SocketKeys.CREATE_MESSAGE)
     async sendMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: CreateMessageDto) {
-        try {            
+        try {
+            this.logger.log('Creating a new message', SocketKeys.CREATE_MESSAGE);
             return await this.chatMessageService.createMessage(data, socket);
         } catch (error) {
-            console.log(error);
+            const errorMessage = getErrorMessage(error);
+            this.logger.error(errorMessage, null, SocketKeys.CREATE_MESSAGE);
         }
     }
 }
