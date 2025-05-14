@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { Cache } from "cache-manager";
-import { Inject, Injectable } from "@nestjs/common";
+import { ForbiddenException, Inject, Injectable } from "@nestjs/common";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { CreateMessageDto } from "@src/modules/chat-messages/dtos/create-message.dto";
 import { DevLoggerService } from "@src/modules/logger/dev_logger.service";
@@ -12,10 +12,13 @@ import { ChatRoomsRepository } from "@src/modules/chat-rooms/repositories/chat-r
 import { AgentsService } from "./agents.service";
 import { UsersRepository } from "@src/modules/users/users.repository";
 import { ChatMessageRepository } from "@src/modules/chat-messages/chat-messages.repository";
+import { ResponseMessages } from "@src/common/constants/response-messages.constant";
+import { ChatMessageEmit } from "../emit/chat_message.emit";
 
 @Injectable()
 export class ChatMessageService {
     private readonly ttl: number = 1.2096e9; // 2 weeks in milliseconds
+    private readonly MAX_GUEST_PROMPTS = 10;
 
     constructor(
         private readonly devLogger: DevLoggerService,
@@ -23,6 +26,7 @@ export class ChatMessageService {
         private readonly chatRoomsRepository: ChatRoomsRepository,
         private readonly chatMessageRepository: ChatMessageRepository,
         private readonly usersRepository: UsersRepository,
+        private readonly chatMessageEmit: ChatMessageEmit,
         @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
     ) { }
 
@@ -32,6 +36,7 @@ export class ChatMessageService {
             const socketRoom = isTemporaryUser ? fingerprintId : data?.chat_room_id;
 
             socket.join(socketRoom);
+            socket.emit("message", `join room ${socketRoom}`)
 
             const { value, error } = createMessageValidator.validate(data);
 
@@ -63,6 +68,9 @@ export class ChatMessageService {
             status: StatusEnum.ASKED,
             response: null,
         };
+
+        const usedLimited = await this.checkUsageLimited(fingerprintId);
+        if (usedLimited) return;
 
         try {
             await this.cacheManager.set(cacheKey, JSON.stringify(initialMessage), this.ttl);
@@ -114,6 +122,22 @@ export class ChatMessageService {
             const errorMessage = getErrorMessage(err);
             this.devLogger.error(errorMessage, null, 'PROCESS_AUTHENTICATED_MODE_MESSAGE');
         }
+    }
+
+    private async checkUsageLimited(fingerprintId: string): Promise<boolean> {
+        const cacheKey = `guest-prompt-count-${fingerprintId}`;
+        let promptCount = await this.cacheManager.get<number>(cacheKey);
+
+        if (!promptCount) promptCount = 0;
+
+        if (promptCount >= this.MAX_GUEST_PROMPTS) {
+            const error = new ForbiddenException(ResponseMessages.PLEASE_AUTHENTICATE_LIMITED_GUEST_MODE);
+            this.chatMessageEmit.createMessage(fingerprintId, SocketKeys.RECEIVE_MESSAGE, error);
+            return true;
+        }
+
+        await this.cacheManager.set(cacheKey, promptCount + 1, this.ttl);
+        return false;
     }
 
     private async streamMessage(userPrompt: string, socket: Socket): Promise<string | null> {

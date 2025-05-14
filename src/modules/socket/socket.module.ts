@@ -7,6 +7,7 @@ import { UsersModule } from "../users/users.module";
 import { AgentsService } from "./service/agents.service";
 import { ChatRoomsModule } from "../chat-rooms/chat-rooms.module";
 import { ChatMessagesModule } from "../chat-messages/chat-messages.module";
+import { ChatMessageEmit } from "./emit/chat_message.emit";
 
 @Module({
     imports: [
@@ -20,7 +21,8 @@ import { ChatMessagesModule } from "../chat-messages/chat-messages.module";
         SocketGateway, 
         ChatMessageService,
         ConnectionService,
-        AgentsService
+        AgentsService,
+        ChatMessageEmit,
     ]
 })
 
